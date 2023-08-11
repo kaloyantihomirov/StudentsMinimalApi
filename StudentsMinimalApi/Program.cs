@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Builder;
 using StudentsMinimalApi;
 
 using System.Collections.Concurrent;
@@ -21,24 +20,21 @@ ConcurrentDictionary<string, Student> _students = new();
 app.MapGet("/student", () => _students);
 
 app.MapGet("student/{id}", (string id) =>
-     _students.TryGetValue(id, out var student) 
-        ? Results.Ok(student)
-        : TypedResults.NotFound()
+     _students.TryGetValue(id, out var student)
+        ? TypedResults.Ok(student)
+        : Results.Problem(statusCode: 404)
 );
 
 app.MapPost("/student/{id}", (string id, Student student) =>
-{
-    if (_students.TryGetValue(id, out var existingStudent))
+  _students.TryAdd(id, student) ?
+  TypedResults.Created($"/student/{id}", student) :
+  Results.ValidationProblem(new Dictionary<string, string[]> 
+  {
     {
-        return Results.ValidationProblem(new Dictionary<string, string[]>
-        {
-            { "id", new[] { "A student with the given id already exists."} }
-        });
+      "id",
+      new [] { "A student with the given id already exists." }
     }
-
-    _students[id] = student;
-    return Results.Created($"student/{id}", student);
-});
+  }));
 
 /// <remarks>
 /// Note that the put method call will either update an existing student 
@@ -47,11 +43,15 @@ app.MapPost("/student/{id}", (string id, Student student) =>
 app.MapPut("/student/{id}", (string id, Student student) =>
 {
     _students[id] = student;
+
+    return TypedResults.NoContent();
 });
 
 app.MapDelete("/student/{id}", (string id) =>
 {
     _students.TryRemove(id, out _);
+
+    return TypedResults.NoContent();
 });
 
 app.Run();
