@@ -3,9 +3,9 @@
     public class Student
     {
         public Student(
-            string firstName,
-            string lastName,
-            string? favouriteSubject = null)
+            string? firstName,
+            string? lastName,
+            string? favouriteSubject)
         {
             this.FirstName = firstName;
             this.LastName = lastName;
