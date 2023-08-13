@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Diagnostics;
 using StudentsMinimalApi;
 
 using System.Collections.Concurrent;
@@ -10,6 +11,11 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Services.AddProblemDetails();
 
 WebApplication app = builder.Build();
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler();
+}
 
 ///<remarks>
 ///This middleware combined with the service we registered will allow us 
@@ -24,21 +30,37 @@ WebApplication app = builder.Build();
 ///middleware.
 ///</remarks>
 app.UseStatusCodePages();
+app.UseMiddleware<StatusCodePagesMiddleware>();
 
 ConcurrentDictionary<string, Student> _students = new();
+
+//app.MapGet("/testStringReturnType", () => "Hello from test handler!");
+
+//app.MapGet("/testVoid", void () => { });
+
+//app.MapGet("/testPOCO", () => new Student(null, null, null));
 
 app.MapGet("/student", () => _students);
 
 app.MapGet("student/{id}", (string id) =>
-     _students.TryGetValue(id, out var student)
-        ? TypedResults.Ok(student)
-        : Results.Problem(statusCode: 404)
-);
+{
+    if (string.IsNullOrEmpty(id) || !id.StartsWith('s'))
+    {
+        return Results.ValidationProblem(new Dictionary<string, string[]>
+        {
+            { "id", new[] {" Id cannot be null or empty and must start with 's'" } }
+        });
+    }
+
+    return _students.TryGetValue(id, out var student)
+       ? TypedResults.Ok(student)
+       : Results.Problem(statusCode: 404);
+});
 
 app.MapPost("/student/{id}", (string id, Student student) =>
   _students.TryAdd(id, student) ?
   TypedResults.Created($"/student/{id}", student) :
-  Results.ValidationProblem(new Dictionary<string, string[]> 
+  Results.ValidationProblem(new Dictionary<string, string[]>
   {
     {
       "id",
