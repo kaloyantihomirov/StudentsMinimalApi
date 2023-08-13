@@ -5,4 +5,5 @@ I also tried to predict common problems that may occur when a client calls my AP
 
 Problem Details is used for providing machine-readable errors for HTTP APIs.
 
-I used endpoint filters for common validation code. I also used a factory pattern for them to be more reusable.
+I used endpoint filters for common validation code. I also used a factory pattern for them to be more reusable. A filter factory is a generalised way to add endpoint filters.
+I used a filter factory for a general way to validate if the id of a student is not empty and starts with 's'.
