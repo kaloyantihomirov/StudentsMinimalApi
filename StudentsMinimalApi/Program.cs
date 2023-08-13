@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Diagnostics;
 using StudentsMinimalApi;
 
 using System.Collections.Concurrent;
@@ -17,6 +16,19 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler();
 }
 
+if (app.Environment.IsDevelopment())
+{
+    //app.MapGet("/routes", (IEnumerable<EndpointDataSource> endpointSources) =>
+    //    string.Join(
+    //        Environment.NewLine, endpointSources.SelectMany(source => source.Endpoints)));
+
+    ///<remarks>
+    ///This is a way to obtain the collection of endpoints describing our application.
+    ///</remarks>
+    app.MapGet("/routes", (EndpointDataSource endpointSource) =>
+        string.Join(Environment.NewLine, endpointSource.Endpoints));
+}
+
 ///<remarks>
 ///This middleware combined with the service we registered will allow us 
 ///to standardize our error handling and have better communication 
@@ -30,7 +42,6 @@ if (!app.Environment.IsDevelopment())
 ///middleware.
 ///</remarks>
 app.UseStatusCodePages();
-app.UseMiddleware<StatusCodePagesMiddleware>();
 
 ConcurrentDictionary<string, Student> _students = new();
 
@@ -42,15 +53,16 @@ ConcurrentDictionary<string, Student> _students = new();
 
 app.MapGet("/student", () => _students);
 
-app.MapGet("student/{id}", (string id) =>
+app.MapGet("/student/{id}", (string id) =>
     _students.TryGetValue(id, out var student)
        ? TypedResults.Ok(student)
-       : Results.Problem(statusCode: 404));
+       : Results.Problem(statusCode: 404))
+    .AddEndpointFilter(ValidationHelper.ValidateId);
 
 app.MapPost("/student/{id}", (string id, Student student) =>
-  _students.TryAdd(id, student) ?
-  TypedResults.Created($"/student/{id}", student) :
-  Results.ValidationProblem(new Dictionary<string, string[]>
+  _students.TryAdd(id, student)
+     ? TypedResults.Created($"/student/{id}", student)
+     : Results.ValidationProblem(new Dictionary<string, string[]>
   {
     {
       "id",
