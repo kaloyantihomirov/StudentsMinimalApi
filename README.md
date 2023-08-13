@@ -5,3 +5,4 @@ I also tried to predict common problems that may occur when a client calls my AP
 
 Problem Details is used for providing machine-readable errors for HTTP APIs.
 
+I used endpoint filters for common validation code.
