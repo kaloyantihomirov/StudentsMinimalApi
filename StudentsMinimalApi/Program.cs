@@ -43,19 +43,9 @@ ConcurrentDictionary<string, Student> _students = new();
 app.MapGet("/student", () => _students);
 
 app.MapGet("student/{id}", (string id) =>
-{
-    if (string.IsNullOrEmpty(id) || !id.StartsWith('s'))
-    {
-        return Results.ValidationProblem(new Dictionary<string, string[]>
-        {
-            { "id", new[] {" Id cannot be null or empty and must start with 's'" } }
-        });
-    }
-
-    return _students.TryGetValue(id, out var student)
+    _students.TryGetValue(id, out var student)
        ? TypedResults.Ok(student)
-       : Results.Problem(statusCode: 404);
-});
+       : Results.Problem(statusCode: 404));
 
 app.MapPost("/student/{id}", (string id, Student student) =>
   _students.TryAdd(id, student) ?
