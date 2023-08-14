@@ -68,6 +68,7 @@ namespace StudentsMinimalApi
 
             return Filter;
 
+            //This is a shorter way of writing the same thing, but I find that it's more difficult to follow.
             //return async (invocationContext) =>
             //{
             //    string id = invocationContext.GetArgument<string>(idPosition.Value);
@@ -76,14 +77,12 @@ namespace StudentsMinimalApi
             //    {
             //        return Results.ValidationProblem(new Dictionary<string, string[]>
             //        {
-            //{ "id", new[] { "Id cannot be null or empty and must start with 's'" } }
+            //            { "id", new[] { "Id cannot be null or empty and must start with 's'" } }
             //        });
             //    }
 
             //    return await next(invocationContext);
             //};
-
-
         }
     }
 }
