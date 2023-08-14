@@ -47,7 +47,7 @@ ConcurrentDictionary<string, Student> _students = new();
 
 RouteGroupBuilder studentsApi = app.MapGroup("/student");
 
-studentsApi.MapGet("/student", () => _students);
+studentsApi.MapGet("/", () => _students);
 
 RouteGroupBuilder studentsApiWithValidation = studentsApi
     .MapGroup("/")
@@ -70,14 +70,14 @@ studentsApiWithValidation.MapPost("/{id}", (Student student, string id) =>
 /// Note that the put method call will either update an existing student 
 /// or create a new one.
 /// </remarks>
-studentsApiWithValidation.MapPut("/student/{id}", (string id, Student student) =>
+studentsApiWithValidation.MapPut("/{id}", (string id, Student student) =>
 {
     _students[id] = student;
 
     return TypedResults.NoContent();
 });
 
-studentsApiWithValidation.MapDelete("/student/{id}", (string id) =>
+studentsApiWithValidation.MapDelete("/{id}", (string id) =>
 {
     _students.TryRemove(id, out _);
 
