@@ -57,7 +57,8 @@ app.MapGet("/student/{id}", (string id) =>
     _students.TryGetValue(id, out var student)
        ? TypedResults.Ok(student)
        : Results.Problem(statusCode: 404))
-    .AddEndpointFilter(ValidationHelper.ValidateId);
+    //.AddEndpointFilter(ValidationHelper.ValidateId);
+    .AddEndpointFilterFactory(ValidationHelper.ValidateIdFactory);
 
 app.MapPost("/student/{id}", (string id, Student student) =>
   _students.TryAdd(id, student)
@@ -66,7 +67,7 @@ app.MapPost("/student/{id}", (string id, Student student) =>
   {
     {
       "id",
-      new [] { "A student with the given id already exists." }
+      new[] { "A student with the given id already exists." }
     }
   }));
 
