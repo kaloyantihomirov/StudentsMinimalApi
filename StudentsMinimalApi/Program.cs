@@ -45,44 +45,39 @@ app.UseStatusCodePages();
 
 ConcurrentDictionary<string, Student> _students = new();
 
-//app.MapGet("/testStringReturnType", () => "Hello from test handler!");
+RouteGroupBuilder studentsApi = app.MapGroup("/student");
 
-//app.MapGet("/testVoid", void () => { });
+studentsApi.MapGet("/student", () => _students);
 
-//app.MapGet("/testPOCO", () => new Student(null, null, null));
-
-app.MapGet("/student", () => _students);
-
-app.MapGet("/student/{id}", (string id) =>
-    _students.TryGetValue(id, out var student)
-       ? TypedResults.Ok(student)
-       : Results.Problem(statusCode: 404))
-    //.AddEndpointFilter(ValidationHelper.ValidateId);
+RouteGroupBuilder studentsApiWithValidation = studentsApi
+    .MapGroup("/")
     .AddEndpointFilterFactory(ValidationHelper.ValidateIdFactory);
 
-app.MapPost("/student/{id}", (string id, Student student) =>
+studentsApiWithValidation.MapGet("/{id}", (string id) =>
+    _students.TryGetValue(id, out var student)
+       ? TypedResults.Ok(student)
+       : Results.Problem(statusCode: 404));
+
+studentsApiWithValidation.MapPost("/{id}", (Student student, string id) =>
   _students.TryAdd(id, student)
      ? TypedResults.Created($"/student/{id}", student)
      : Results.ValidationProblem(new Dictionary<string, string[]>
   {
-    {
-      "id",
-      new[] { "A student with the given id already exists." }
-    }
+    { "id", new[] { "A student with the given id already exists." } }
   }));
 
 /// <remarks>
 /// Note that the put method call will either update an existing student 
 /// or create a new one.
 /// </remarks>
-app.MapPut("/student/{id}", (string id, Student student) =>
+studentsApiWithValidation.MapPut("/student/{id}", (string id, Student student) =>
 {
     _students[id] = student;
 
     return TypedResults.NoContent();
 });
 
-app.MapDelete("/student/{id}", (string id) =>
+studentsApiWithValidation.MapDelete("/student/{id}", (string id) =>
 {
     _students.TryRemove(id, out _);
 
