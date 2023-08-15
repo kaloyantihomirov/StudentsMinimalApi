@@ -7,9 +7,9 @@
             string? lastName,
             string? favouriteSubject)
         {
-            this.FirstName = firstName;
-            this.LastName = lastName;
-            this.FavouriteSubject = favouriteSubject;
+            FirstName = firstName;
+            LastName = lastName;
+            FavouriteSubject = favouriteSubject;
         }
 
         public string? FirstName { get; set; }

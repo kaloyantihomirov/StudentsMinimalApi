@@ -1,5 +1,5 @@
 using StudentsMinimalApi;
-
+using StudentsMinimalApi.Validation;
 using System.Collections.Concurrent;
 
 ///<remarks>
@@ -85,3 +85,5 @@ studentsApiWithValidation.MapDelete("/{id}", (string id) =>
 });
 
 app.Run();
+
+public partial class Program { }

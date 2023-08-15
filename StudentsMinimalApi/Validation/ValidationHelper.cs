@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace StudentsMinimalApi
+namespace StudentsMinimalApi.Validation
 {
     public class ValidationHelper
     {

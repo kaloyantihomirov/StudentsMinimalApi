@@ -1,9 +1,9 @@
-﻿namespace StudentsMinimalApi
+﻿namespace StudentsMinimalApi.Validation
 {
     public class IdValidationFilter : IEndpointFilter
     {
         public async ValueTask<object?> InvokeAsync(
-            EndpointFilterInvocationContext context, 
+            EndpointFilterInvocationContext context,
             EndpointFilterDelegate next)
         {
             string id = context.GetArgument<string>(0);
