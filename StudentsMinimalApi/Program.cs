@@ -63,7 +63,7 @@ studentsApiWithValidation.MapPost("/{id}",
     Student student,
     string id) =>
         studentService.AddStudent(id, student)
-               ? TypedResults.Created(links.GetPathByName("getStudentById", new { id }) ?? "Something went wrong when trying to generate the link.", student)
+               ? TypedResults.Created(links.GetPathByName("getStudentById", new { id }) ?? "Something went wrong when trying to generate the path.", student)
                : Results.ValidationProblem(new Dictionary<string, string[]>
                 {
                  { "id", new[] { "A student with the given id already exists." } }
