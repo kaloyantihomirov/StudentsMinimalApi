@@ -37,8 +37,6 @@ if (app.Environment.IsDevelopment())
 ///</remarks>
 app.UseStatusCodePages();
 
-ConcurrentDictionary<string, Student> _students = new();
-
 RouteGroupBuilder studentsApi = app.MapGroup("/student");
 
 studentsApi.MapGet("/", () => StudentService.AllStudents).WithName("allStudents");
@@ -63,7 +61,7 @@ studentsApiWithValidation.MapPost("/{id}",
     Student student,
     string id) =>
         studentService.AddStudent(id, student)
-               ? TypedResults.Created(links.GetPathByName("getStudentById", new { id }) ?? "Something went wrong when trying to generate the path.", student)
+               ? TypedResults.Created(links.GetPathByName("getStudentById", new { id }) ?? "Something went wrong when trying to generate the location path.", student)
                : Results.ValidationProblem(new Dictionary<string, string[]>
                 {
                  { "id", new[] { "A student with the given id already exists." } }
