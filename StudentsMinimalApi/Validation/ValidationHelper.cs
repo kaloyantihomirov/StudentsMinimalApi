@@ -22,8 +22,8 @@ namespace StudentsMinimalApi.Validation
         }
         /// <summary>
         /// The filter factory is a function that takes an EndpointFilterFactoryContext 
-        /// and a filter (represented by EndpointFilterDelegate) and returns a new filter. A filter is a function 
-        /// (represented by EndpointDelegate).
+        /// and a filter (represented by EndpointFilterDelegate) and returns a new filter. 
+        /// A filter is a function (represented by EndpointDelegate).
         /// </summary>
         /// <param name="context">A context object that exposes information about the route handler being intercepted.</param>
         /// <param name="next">A delegate type that represents invocation of the filter chain.</param>
@@ -50,7 +50,7 @@ namespace StudentsMinimalApi.Validation
                 return next;
             }
 
-            ///<remarks>Here we are actually defining the Filter that we're returning</remarks>
+            ///<remarks>Here we are actually defining the filter that we're returning</remarks>
             async ValueTask<object?> Filter(EndpointFilterInvocationContext invocationContext)
             {
                 string id = invocationContext.GetArgument<string>(idPosition.Value);
