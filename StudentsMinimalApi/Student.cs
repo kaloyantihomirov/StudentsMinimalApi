@@ -3,8 +3,8 @@
     public class Student
     {
         public Student(
-            string? firstName,
-            string? lastName,
+            string firstName,
+            string lastName,
             string? favouriteSubject)
         {
             FirstName = firstName;
@@ -12,9 +12,9 @@
             FavouriteSubject = favouriteSubject;
         }
 
-        public string? FirstName { get; set; }
+        public string FirstName { get; set; }
 
-        public string? LastName { get; set; }
+        public string LastName { get; set; }
 
         public string? FavouriteSubject { get; set; }
     }
